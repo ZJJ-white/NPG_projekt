@@ -18,13 +18,14 @@ class PasswordWidget(ctk.CTkFrame):
 
     def DeletePassword(self):
         self.Passwords.remove(self.password_name)
-        self.destroy()
+        self.destroy()            
 
 class ScrollableFrame(ctk.CTkScrollableFrame):
     def __init__(self, title, values, *args, **kwargs):
         super().__init__(*args, label_text=title, **kwargs)
         
         self.grid_columnconfigure(0, weight=1)
+        self.index = len(values)
 
         for index, widget in enumerate(values):
             password_widget = PasswordWidget(text=widget, Passwords=values, master=self)
@@ -54,8 +55,9 @@ class AddPassword(ctk.CTkFrame):
         
         self.Passwords.append(password)
         NewPasswordWidget = PasswordWidget(password, self.Passwords, master=self.ParentFrame)
-        NewPasswordWidget.grid(row=len(self.Passwords) - 1, column=0, padx=(5,5), pady=(10,0), sticky='w')
-        
+        NewPasswordWidget.grid(row=self.ParentFrame.index, column=0, padx=(5,5), pady=(10,0), sticky='w')
+        self.ParentFrame.index += 1
+
 class PasswordManagerClass(ctk.CTkToplevel):
         def __init__(self, Passwords):
             super().__init__()
