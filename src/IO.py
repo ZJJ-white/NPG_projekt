@@ -1,31 +1,29 @@
 def load_passwords():
-    hard = []
-    medium = []
-    easy = []
+    Passwords = {'Hard':[], 'Medium':[], 'Easy':[]}
     
     with open(r"passwords\hard.txt", 'rt', encoding='utf-8') as file:
         for line in file:
-            hard.append(line.strip())
+            Passwords['Hard'].append(line.strip())
 
     with open(r"passwords\easy.txt", 'rt', encoding='utf-8') as file:
         for line in file:
-            easy.append(line.strip())
+            Passwords['Medium'].append(line.strip())
 
     with open(r"passwords\medium.txt", 'rt', encoding='utf-8') as file:
         for line in file:
-            medium.append(line.strip())
+            Passwords['Easy'].append(line.strip())
 
-    return (hard, medium, easy)
+    return Passwords
 
-def save_passwords(hard, medium, easy):
+def save_passwords(Passwords):
     with open(r"passwords\hard.txt", 'w', encoding='utf-8') as file:
-        for word in hard:
+        for word in Passwords['Hard']:
             file.write(word + "\n")
 
     with open(r"passwords\medium.txt", 'w', encoding='utf-8') as file:
-        for word in medium:
+        for word in Passwords['Medium']:
             file.write(word + '\n')
 
     with open(r"passwords\easy.txt", 'w', encoding='utf-8') as file:
-        for word in easy:
+        for word in Passwords['Easy']:
             file.write(word + '\n')
