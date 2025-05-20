@@ -1,7 +1,34 @@
-from src import IO
+import customtkinter as ctk
+import src.PasswordsManager as PM
+import src.IO as IO
 
-(hard, medium, easy) = IO.load_passwords()
+class App(ctk.CTk):
+    def __init__(self,*args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.geometry("600x500")
+        self.resizable(True, True)
 
-print(f'Hasła trudne: {hard}')
-print(f'Hasła średnie: {medium}')
-print(f'Hasła łatwe: {easy}')
+        self.protocol("WM_DELETE_WINDOW", self.Cleanup) #\
+        ctk.set_appearance_mode('dark')                 #|
+        (HP, MP, EP) = IO.load_passwords()              #| Przygotowanie aplikacji, tj. wczytanie danych i zapisanie do atrybutów 
+        self.HardPasswords = HP                         #| Ten protocol sprawia, że przy zamykaniu wywołam cleanup, czyli zapis do plików haseł i statystyk
+        self.MedmiumPasswords = MP                      #|
+        self.EasyPasswords = EP                         #/
+
+        self.PasswordManagerWindow = None
+        self.PasswordManagerButton = ctk.CTkButton(self, text='Zarządzaj hasłami', command=self.OpenPasswordManager)
+        self.PasswordManagerButton.pack(side='top', padx=20, pady=20)
+
+    def OpenPasswordManager(self):                                                                                               #\
+        if self.PasswordManagerWindow is None or not self.PasswordManagerWindow.winfo_exists():                                  #| Tworzy okno Zarządzania Hasłami
+            self.PasswordManagerWindow = PM.PasswordManagerClass(self.HardPasswords, self.MedmiumPasswords, self.EasyPasswords)  #| Jak już istnieje to je tylko zoomuje (.focus())
+        else:                                                                                                                    #|
+            self.PasswordManagerWindow.focus()                                                                                   #/
+
+    def Cleanup(self):
+        IO.save_passwords(self.HardPasswords, self.MedmiumPasswords, self.EasyPasswords)   # Zapisanie do pliku z hasłami haseł po usunięciu/dodaniu nowych
+        self.destroy()                                                                     # Niszczy okno aplikacji
+
+if __name__ == '__main__':
+    app = App()
+    app.mainloop()
