@@ -1,4 +1,4 @@
-alfabet
-geometria
-morze
-kaczka
+restrykcje
+obejmować
+piłka
+samolot
