@@ -1,4 +1,8 @@
-alfabet
-geometria
-morze
-kaczka
+restrykcje
+obejmować
+piłka
+samolot
+truskawka
+orangutan
+ananas
+korkociąg

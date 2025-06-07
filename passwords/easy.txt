@@ -1,4 +1,8 @@
-restrykcje
-obejmować
-piłka
-samolot
+alfabet
+geometria
+morze
+kaczka
+lejce
+ogień
+wałek
+koń
