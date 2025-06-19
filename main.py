@@ -1,6 +1,8 @@
 import customtkinter as ctk
 import src.PasswordsManager as PM
 import src.IO as IO
+import src.SavesWindow as SW
+
 
 class App(ctk.CTk):
     def __init__(self,*args, **kwargs):
@@ -16,6 +18,13 @@ class App(ctk.CTk):
         self.PasswordManagerButton = ctk.CTkButton(self, text='Zarządzaj hasłami', command=self.OpenPasswordManager)
         self.PasswordManagerButton.pack(side='top', padx=20, pady=20)
 
+        self.Saves = IO.load_saves()
+
+        
+        self.SavesWindow = ctk.CTkButton(self, text='Wczytaj grę', command=self.OpenSavesWindow)
+        self.SavesWindow.pack(side='top', padx=20, pady=20)
+        self.SavesWindow = None
+
     def OpenPasswordManager(self):                                                                                               #\
         if self.PasswordManagerWindow is None or not self.PasswordManagerWindow.winfo_exists():                                  #| Tworzy okno Zarządzania Hasłami
             self.PasswordManagerWindow = PM.PasswordManagerClass(self.Passwords)                                                 #| Jak już istnieje to je tylko zoomuje (.focus())
@@ -25,6 +34,13 @@ class App(ctk.CTk):
     def Cleanup(self):
         IO.save_passwords(self.Passwords)   # Zapisanie do pliku z hasłami haseł po usunięciu/dodaniu nowych
         self.destroy()                      # Niszczy okno aplikacji
+
+    def OpenSavesWindow(self):
+        if self.SavesWindow is None or not self.SavesWindow.winfo_exists():                                  
+            self.SavesWindow = SW.SavesManagerClass(self.Saves)                                                 
+        else:                                                                                                                    
+            self.SavesWindow.focus()
+
 
 if __name__ == '__main__':
     app = App()
