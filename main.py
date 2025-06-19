@@ -11,7 +11,7 @@ class App(ctk.CTk):
         self.protocol("WM_DELETE_WINDOW", self.Cleanup)       #|  
         ctk.set_appearance_mode('dark')                       #| Przygotowanie aplikacji, tj. wczytanie danych i zapisanie do atrybutów   
         self.Passwords = IO.load_passwords()                  #| Ten protocol sprawia, że przy zamykaniu wywołam cleanup, czyli zapis do plików haseł i statystyk                  
-                                     
+                       
         self.PasswordManagerWindow = None
         self.PasswordManagerButton = ctk.CTkButton(self, text='Zarządzaj hasłami', command=self.OpenPasswordManager)
         self.PasswordManagerButton.pack(side='top', padx=20, pady=20)
