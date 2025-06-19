@@ -31,8 +31,13 @@ class ChallengeModeWindow(ctk.CTkToplevel):
 
         self.realtime_clock = ctk.CTkLabel(self.bg_frame, text="", font=("Arial", 14))
         self.realtime_clock.place(relx=0.97, rely=0.03, anchor="ne")
+        if not nick:
+            self.username_window()
+        else:
+            self.username = nick
+            self.build_ui()
 
-        self.username_window()
+            
         self.update_realtime_clock()
 
     def username_window(self):
@@ -79,9 +84,9 @@ class ChallengeModeWindow(ctk.CTkToplevel):
 
         self.score_label = ctk.CTkLabel(self.main_frame, text=f"Wynik: {self.score}", font=("Arial", 16))
         self.score_label.grid(row=4, column=0, pady=10)
-        
-        
-        self.start_button = ctk.CTkButton(self.main_frame, text="Start", command=self.start_game)
+
+
+        self.start_button = ctk.CTkButton(self.main_frame, text="Start", command=lambda: self.start_game(self.time_left, self.score))
         self.start_button.grid(row=5, column=0, pady=5)
 
         self.pause_button = ctk.CTkButton(self.main_frame, text="Pauza", command=self.toggle_pause)
@@ -105,23 +110,24 @@ class ChallengeModeWindow(ctk.CTkToplevel):
         self.main_frame.configure(fg_color="#101010")
         self.word_label.configure(text_color="white")
 
-    def start_game(self):
-        self.score = 0
-        self.time_left = 30
+    def start_game(self, time=30, score=0):
+        self.score = score
+        self.time_left = time
         self.timer_running = True
         self.paused = False
         self.used_words = []
         self.entry.configure(state="normal")
         self.entry.delete(0, 'end')
         self.entry.focus()
-        self.score_label.configure(text="Wynik: 0")
+        self.score_label.configure(text=f"Wynik: {self.score}")
+        self.time_label.configure(text=f"Czas: {self.time_left}")
         self.next_word()
         self.update_timer()
         self.apply_difficulty_colors()
         self.protocol("WM_DELETE_WINDOW", self.Clean)
 
-    def Clean(self):
-    # Zapisz niedokończoną grę tylko jeśli gra trwa
+    def Clean(self):  #zapis urwaniej gry
+
         if self.timer_running and self.time_left > 0:
             IO.save_saves(
             score=self.score,

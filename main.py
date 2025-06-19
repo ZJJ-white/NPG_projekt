@@ -1,9 +1,9 @@
 import customtkinter as ctk
 import src.PasswordsManager as PM
 import src.IO as IO
-import src.SavesWindow as SW
 import src.ChallengeMode as CM
 import tkinter.messagebox as mbox
+
 
 class App(ctk.CTk):
     def __init__(self,*args, **kwargs):
@@ -22,7 +22,7 @@ class App(ctk.CTk):
         self.Saves = IO.load_saves()
 
         
-        self.SavesWindow = ctk.CTkButton(self, text='Wczytaj ostatnią grę', command=self.OpenSave)
+        self.SavesWindow = ctk.CTkButton(self, text='Wczytaj ostatnią grę', command=self.OpenSavesWindow)
         self.SavesWindow.pack(side='top', padx=20, pady=20)
         self.SavesWindow = None
 
@@ -37,24 +37,18 @@ class App(ctk.CTk):
             self.PasswordManagerWindow.focus()                                                                                   #/
 
     def Cleanup(self):
-        IO.save_passwords(self.Passwords)   # Zapisanie do pliku z hasłami haseł po usunięciu/dodaniu nowych
-        self.destroy()                      # Niszczy okno aplikacji
+        IO.save_passwords(self.Passwords)   
+        self.destroy()                      
+
 
     def OpenSavesWindow(self):
-        if self.SavesWindow is None or not self.SavesWindow.winfo_exists():                                  
-            self.SavesWindow = SW.SavesManagerClass(self.Saves)                                                 
-        else:                                                                                                                    
-            self.SavesWindow.focus()
-
-    def OpenSave(self):
         saves = IO.load_saves()
         if not saves:
             mbox.showinfo("Brak zapisów", "Nie znaleziono żadnych zapisów gry.")
         else:
             last_save = saves[0]
             window=CM.ChallengeModeWindow(self.Passwords, last_save['score'], last_save['remaining_time'], last_save['nick'], last_save['difficulty'])
-            window.start_game()
-            
+            IO.remove_saves(0)        
 
 
     def OpenChallengeMode(self):

@@ -74,7 +74,7 @@ def load_saves():
     path = os.path.join(os.path.abspath(__file__), "..", "..", 'saves')
     file_path = os.path.join(path, 'save.txt')
     saves = []
-    
+
     if not os.path.exists(file_path):
         return saves  
     with open(file_path, 'r', encoding='utf-8') as file:
@@ -106,12 +106,5 @@ def save_saves(score, remaining_time, nick, difficulty):
 def remove_saves(index=0):
     path = os.path.join(os.path.abspath(__file__), "..", "..", 'saves')
     file_path = os.path.join(path, 'save.txt')
-
-    if not os.path.exists(file_path):
-        return
-    with open(file_path, 'r', encoding='utf-8') as file:
-        lines = file.readlines()
-    if 0 <= index < len(lines):
-        del lines[index]
-        with open(file_path, 'w', encoding='utf-8') as file:
-            file.writelines(lines)
+    if os.path.exists(file_path):
+        os.remove(file_path)
