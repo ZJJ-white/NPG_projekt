@@ -4,41 +4,41 @@ import src.IO as IO
 import src.ChallengeMode as CM
 
 class App(ctk.CTk):
-    def __init__(self,*args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.geometry("600x500")
         self.resizable(True, True)
 
-        self.protocol("WM_DELETE_WINDOW", self.Cleanup)       #|  
-        ctk.set_appearance_mode('dark')                       #| Przygotowanie aplikacji, tj. wczytanie danych i zapisanie do atrybutów   
-        self.Passwords = IO.load_passwords()                  #| Ten protocol sprawia, że przy zamykaniu wywołam cleanup, czyli zapis do plików haseł i statystyk                  
-                                     
+        self.protocol("WM_DELETE_WINDOW", self.Cleanup)
+        ctk.set_appearance_mode('dark')
+
+        self.Passwords = IO.load_passwords()
+
         self.PasswordManagerWindow = None
         self.PasswordManagerButton = ctk.CTkButton(self, text='Zarządzaj hasłami', command=self.OpenPasswordManager)
         self.PasswordManagerButton.pack(side='top', padx=20, pady=20)
 
-        self.ChallengeWindow = CM.ChallengeModeWindow(self.Passwords)
-        self.ChallengeWindow.focus()
+        self.ChallengeModeButton = ctk.CTkButton(self, text='Tryb Challenge', command=self.OpenChallengeMode)
+        self.ChallengeModeButton.pack(side='top', padx=20, pady=10)
 
-    def OpenPasswordManager(self):                                                                                               #\
-        if self.PasswordManagerWindow is None or not self.PasswordManagerWindow.winfo_exists():                                  #| Tworzy okno Zarządzania Hasłami
-            self.PasswordManagerWindow = PM.PasswordManagerClass(self.Passwords)                                                 #| Jak już istnieje to je tylko zoomuje (.focus())
-        else:                                                                                                                    #|
-            self.PasswordManagerWindow.focus()                                                                                   #/
+        self.ScoreboardButton = ctk.CTkButton(self, text='Tablica Rekordów', command=self.OpenScoreboard)
+        self.ScoreboardButton.pack(side='top', padx=20, pady=10)
+
+    def OpenPasswordManager(self):
+        if self.PasswordManagerWindow is None or not self.PasswordManagerWindow.winfo_exists():
+            self.PasswordManagerWindow = PM.PasswordManagerClass(self.Passwords)
+        else:
+            self.PasswordManagerWindow.focus()
+
+    def OpenChallengeMode(self):
+        CM.ChallengeModeWindow(self.Passwords)
+
+    def OpenScoreboard(self):
+        CM.ScoreboardWindow()
 
     def Cleanup(self):
-        IO.save_passwords(self.Passwords)   # Zapisanie do pliku z hasłami haseł po usunięciu/dodaniu nowych
-        self.destroy()                      # Niszczy okno aplikacji
-
-    def OpenChallengeWindow(self):
-        self.ChallengeWindow = CM.ChallengeModeWindow(self.Passwords)
-        self.ChallengeWindow.focus()
-        self.ChallengeWindow.pack(side='top', padx=20, pady=20)
-
-
-
-
-
+        IO.save_passwords(self.Passwords)
+        self.destroy()
 
 if __name__ == '__main__':
     app = App()
