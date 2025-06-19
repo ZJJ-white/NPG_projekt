@@ -71,34 +71,47 @@ def save_stats(Statistic):
     # nowe zmiany - Zapisy
 
 def load_saves():
-    Saves = {'save-1':[], 'save-2':[], 'save-3':[]}
     path = os.path.join(os.path.abspath(__file__), "..", "..", 'saves')
-
-    with open(os.path.join(path, 'saves1.txt'), 'rt', encoding='utf-8') as file:
+    file_path = os.path.join(path, 'save.txt')
+    saves = []
+    
+    if not os.path.exists(file_path):
+        return saves  
+    with open(file_path, 'r', encoding='utf-8') as file:
         for line in file:
-            Saves['save-1'].append(line.strip())
+            line = line.strip()
+            if line:
+                
+                parts = line.split(';')
+                if len(parts) == 4:
+                    nick, difficulty, score, remaining_time = parts
+                    saves.append({
+                        'nick': nick,
+                        'difficulty': difficulty,
+                        'score': int(score),
+                        'remaining_time': int(remaining_time)
+                    })
+    return saves
 
-    with open(os.path.join(path, 'saves2.txt'), 'rt', encoding='utf-8') as file:
-        for line in file:
-            Saves['save-2'].append(line.strip())
 
-    with open(os.path.join(path, 'saves3.txt'), 'rt', encoding='utf-8') as file:
-        for line in file:
-            Saves['save-3'].append(line.strip())
 
-    return Saves
+def save_saves(score, remaining_time, nick, difficulty):
 
-def save_saves(Saves):
     path = os.path.join(os.path.abspath(__file__), "..", "..", 'saves')
+    file_path = os.path.join(path, 'save.txt')
 
-    with open(os.path.join(path, 'saves1.txt'), 'w', encoding='utf-8') as file:
-        for word in Saves['save-1']:
-            file.write(word + "\n")
+    with open(file_path, 'a', encoding='utf-8') as file:
+        file.write(f"{nick};{difficulty};{score};{remaining_time}\n")
 
-    with open(os.path.join(path, 'saves2.txt'), 'w', encoding='utf-8') as file:
-        for word in Saves['save-2']:
-            file.write(word + "\n")
+def remove_saves(index=0):
+    path = os.path.join(os.path.abspath(__file__), "..", "..", 'saves')
+    file_path = os.path.join(path, 'save.txt')
 
-    with open(os.path.join(path, 'saves3.txt'), 'w', encoding='utf-8') as file:
-        for word in Saves['save-3']:
-            file.write(word + "\n")
+    if not os.path.exists(file_path):
+        return
+    with open(file_path, 'r', encoding='utf-8') as file:
+        lines = file.readlines()
+    if 0 <= index < len(lines):
+        del lines[index]
+        with open(file_path, 'w', encoding='utf-8') as file:
+            file.writelines(lines)
