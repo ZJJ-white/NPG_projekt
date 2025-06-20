@@ -9,8 +9,9 @@ import src.IO as IO
 
 
 class ChallengeModeWindow(ctk.CTkToplevel):
-    def __init__(self, passwords, score=0, time_left=30, nick="", difficulty="Easy"):
+    def __init__(self, passwords, score=0, time_left=30, nick="", difficulty="Easy", master=None):
         super().__init__()
+        self.master=master
         self.geometry("600x400")
         self.title("Tryb Challenge")
         self.passwords = passwords
@@ -38,7 +39,7 @@ class ChallengeModeWindow(ctk.CTkToplevel):
             self.build_ui()
 
             
-        self.update_realtime_clock()
+        self.update_realtime_clock() 
 
     def username_window(self):
         self.username_popup = ctk.CTkToplevel(self)
@@ -54,12 +55,20 @@ class ChallengeModeWindow(ctk.CTkToplevel):
         confirm_button = ctk.CTkButton(self.username_popup, text="OK", command=self.set_username)
         confirm_button.pack(pady=10)
 
+        self.username_popup.lift()
+        self.username_popup.focus_force()
+        self.username_popup.grab_set() 
+         #wyświetla nad grą 
+
     def set_username(self):
         name = self.username_entry.get().strip()
         if name:
             self.username = name
             self.username_popup.destroy()
             self.build_ui()
+
+            self.lift()
+            self.focus_force() #wstawka do poprawnego wyświetlania 
 
     def build_ui(self):
         self.main_frame = ctk.CTkFrame(self.bg_frame, corner_radius=10, fg_color="#101010")
@@ -92,7 +101,7 @@ class ChallengeModeWindow(ctk.CTkToplevel):
         self.pause_button = ctk.CTkButton(self.main_frame, text="Pauza", command=self.toggle_pause)
         self.pause_button.grid(row=6, column=0, pady=(0, 5))
 
-        self.exit_button = ctk.CTkButton(self.main_frame, text="Wyjdź do menu", fg_color="gray", command=self.destroy)
+        self.exit_button = ctk.CTkButton(self.main_frame, text="Wyjdź do menu", fg_color="gray", command=self.Clean)
         self.exit_button.grid(row=7, column=0, pady=(0, 10))
 
         self.apply_difficulty_colors()
@@ -135,6 +144,8 @@ class ChallengeModeWindow(ctk.CTkToplevel):
             nick=self.username,
             difficulty=self.difficulty.get()
             )
+        if self.master:
+            self.master.deiconify()
         self.destroy()
 
 

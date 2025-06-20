@@ -47,12 +47,17 @@ class App(ctk.CTk):
             mbox.showinfo("Brak zapisów", "Nie znaleziono żadnych zapisów gry.")
         else:
             last_save = saves[0]
-            window=CM.ChallengeModeWindow(self.Passwords, last_save['score'], last_save['remaining_time'], last_save['nick'], last_save['difficulty'])
-            IO.remove_saves(0)        
-
+            self.iconify() # minimalizacja menu
+            window=CM.ChallengeModeWindow(self.Passwords, last_save['score'], last_save['remaining_time'], last_save['nick'], last_save['difficulty'], master=self)
+            IO.remove_saves(0)
+            window.protocol("WM_DELETE_WINDOW", lambda: (window.destroy(), self.deiconify())) # przywraca menu 
 
     def OpenChallengeMode(self):
-        CM.ChallengeModeWindow(self.Passwords)
+        self.iconify()
+        window = CM.ChallengeModeWindow(self.Passwords,master=self)
+        window.protocol("WM_DELETE_WINDOW", lambda: (window.destroy(), self.deiconify()))
+    
+        
 
 if __name__ == '__main__':
     app = App()
