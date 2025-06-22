@@ -1,0 +1,7 @@
+Adam, Kajetan, Kuba
+
+Roziwkłanie niepewności związanych z formą zapisywanych statystyk i z sposobem zapisu gry.
+Wzajemny feedback na temat swoich części projektu i ustalenia pewnych poprawek:
+- Do challenge Mode'a zostanie dodany wyświetlający się tekst powtierdzający czy dane słowo zostałe poprawnie wpisane (podobnie jak w trybie do trenowania)
+- Nie będzie wiele miejsc do manualnego zapisu gry, będzie zapisywana ostatnia gry w momencie wyjścia podczas jej trwania
+- statystyki z wielu gier będa wyświetlane w postaci leaderboardu z podziałem na poziomy trudności, ewentualne szczegółowe statystyki dotyczące pojedynczej gry będa wyświetlane na koniec gry i nie będą przechowywane 
