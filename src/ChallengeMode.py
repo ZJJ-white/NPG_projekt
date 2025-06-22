@@ -95,7 +95,7 @@ class ChallengeModeWindow(ctk.CTkToplevel):
         self.score_label.grid(row=4, column=0, pady=10)
 
 
-        self.start_button = ctk.CTkButton(self.main_frame, text="Start", command=lambda: self.start_game(self.time_left, self.score))
+        self.start_button = ctk.CTkButton(self.main_frame, text="Start", command=self.reset_and_start_game) #t
         self.start_button.grid(row=5, column=0, pady=5)
 
         self.pause_button = ctk.CTkButton(self.main_frame, text="Pauza", command=self.toggle_pause)
@@ -134,6 +134,7 @@ class ChallengeModeWindow(ctk.CTkToplevel):
         self.update_timer()
         self.apply_difficulty_colors()
         self.protocol("WM_DELETE_WINDOW", self.Clean)
+        self.start_button.configure(state="disabled")
 
     def Clean(self):  #zapis urwaniej gry
 
@@ -206,6 +207,8 @@ class ChallengeModeWindow(ctk.CTkToplevel):
         self.entry.configure(state="disabled")
         self.time_label.configure(text="Czas: 0", text_color="red")
         self.save_result()
+        self.start_button.configure(state="normal") #t
+        
 
     def save_result(self):
         result_path = os.path.join(os.path.dirname(__file__), "..", "results.txt")
@@ -216,3 +219,13 @@ class ChallengeModeWindow(ctk.CTkToplevel):
         now = datetime.now().strftime("%H:%M:%S")
         self.realtime_clock.configure(text=now)
         self.after(1000, self.update_realtime_clock)
+
+    def reset_and_start_game(self): #t
+        if getattr(self, "loaded_from_save", False):
+            self.start_game(time=self.time_left, score=self.score) # odpalanie z save'a
+            self.loaded_from_save = False  
+        else:
+            self.score = 0
+            self.time_left = 30 # nowa gra
+            self.used_words = []
+            self.start_game(time=self.time_left, score=self.score)

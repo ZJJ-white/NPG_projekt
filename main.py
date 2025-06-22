@@ -49,6 +49,7 @@ class App(ctk.CTk):
             last_save = saves[0]
             self.iconify() # minimalizacja menu
             window=CM.ChallengeModeWindow(self.Passwords, last_save['score'], last_save['remaining_time'], last_save['nick'], last_save['difficulty'], master=self)
+            window.loaded_from_save = True # t
             IO.remove_saves(0)
             window.protocol("WM_DELETE_WINDOW", lambda: (window.destroy(), self.deiconify())) # przywraca menu 
 
