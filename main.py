@@ -46,10 +46,11 @@ class App(ctk.CTk):
         else:                                                                                                                    
             self.PasswordManagerWindow.focus()  
         
-    def OpenStatisticsManager(self):                                                                                               
+    def OpenStatisticsManager(self):        
+        stats = IO.load_stats()                                                                                       
         if self.StatisticsManagerWindow is None or not self.StatisticsManagerWindow.winfo_exists():                                 
             self.iconify()
-            self.StatisticsManagerWindow = SM.StatisticsManagerClass(self.Statistics)
+            self.StatisticsManagerWindow = SM.StatisticsManagerClass(stats)
             self.StatisticsManagerWindow.protocol("WM_DELETE_WINDOW", lambda: (self.StatisticsManagerWindow.destroy(), self.deiconify()))                                                 
         else:                                                                                                                    
             self.StatisticsManagerWindow.focus()    
@@ -57,7 +58,7 @@ class App(ctk.CTk):
     def OpenChallengeMode(self):
         if self.ChallengeModeWindow is None or not self.ChallengeModeWindow.winfo_exists():
             self.iconify()
-            self.ChallengeModeWindow = CM.ChallengeModeWindow(self.Passwords)
+            self.ChallengeModeWindow = CM.ChallengeModeWindow(self.Passwords, master=self)
             self.ChallengeModeWindow.protocol("WM_DELETE_WINDOW", lambda: (self.ChallengeModeWindow.destroy(), self.deiconify()))
         else:
             self.ChallengeModeWindow.focus()
@@ -71,18 +72,19 @@ class App(ctk.CTk):
             self.LearningModeWindow.focus()
 
     def OpenSavesWindow(self):
-        if not self.Saves:
+        saves = IO.load_saves()
+        if not saves:
             mbox.showinfo("Brak zapisów", "Nie znaleziono żadnych zapisów gry.")
         else:
-            last_save = self.Saves[0]
+            last_save = saves[0]
             self.iconify() # minimalizacja menu
             window=CM.ChallengeModeWindow(self.Passwords, last_save['score'], last_save['remaining_time'], last_save['nick'], last_save['difficulty'], master=self)
+            window.loaded_from_save = True # t
             IO.remove_saves(0)
-            window.protocol("WM_DELETE_WINDOW", lambda: (window.destroy(), self.deiconify())) # przywraca menu 
+            window.protocol("WM_DELETE_WINDOW", lambda: (window.destroy(), self.deiconify()))
     
     def Cleanup(self):
         IO.save_passwords(self.Passwords)   
-        IO.save_stats(self.Statistics)
         self.destroy()                      
 
 if __name__ == '__main__':
