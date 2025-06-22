@@ -62,20 +62,20 @@ class StatisticsManagerClass(ctk.CTkToplevel):
         def __init__(self, Statistics_data):
             super().__init__()
             self.Statistics_data = Statistics_data
-            self.geometry("600x500")
+            self.geometry("1000x500")
             self.resizable(True, True)
             
             self.grid_columnconfigure((0,1,2), weight=1)
             self.grid_rowconfigure(0, weight=1)
 
             #wyświetlanie statystyki
-            self.Stat1Frame = ScrollableFrame(title='Łatwe', values=Statistics_data['Easy'],master=self, fg_color='red')
+            self.Stat1Frame = ScrollableFrame(title='Łatwe', values=Statistics_data['Easy'],master=self, fg_color='#339D8F')
             self.Stat1Frame.grid(row=0, column=0, padx=10, pady=10, sticky='nsew')
             
-            self.Stat2Frame = ScrollableFrame(title='Średnie', values=Statistics_data['Medium'],master=self, fg_color='blue')
+            self.Stat2Frame = ScrollableFrame(title='Średnie', values=Statistics_data['Medium'],master=self, fg_color='#C2C73D')
             self.Stat2Frame.grid(row=0, column=1, padx=10, pady=10, sticky='nsew')
 
-            self.Stat3Frame = ScrollableFrame(title='Trudne', values=Statistics_data['Hard'],master=self, fg_color='green')
+            self.Stat3Frame = ScrollableFrame(title='Trudne', values=Statistics_data['Hard'],master=self, fg_color='#BD1A1A')
             self.Stat3Frame.grid(row=0, column=2, padx=10, pady=10, sticky='nsew')
             
             
