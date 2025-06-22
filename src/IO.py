@@ -32,9 +32,7 @@ def save_passwords(Passwords):
     with open(os.path.join(path, "easy.txt"), 'w', encoding='utf-8') as file:
         for word in Passwords['Easy']:
             file.write(word + '\n')
-        
-#nowe zmiany - Statystyki
-
+            
 def load_stats():
     Statistics = {'stat1':[],'stat2':[],'stat3':[]} #trzeba zmienić żeby pasowało 
     path = os.path.join(os.path.abspath(__file__), "..", "..", 'stats')
@@ -67,4 +65,40 @@ def save_stats(Statistic):
     with open(os.path.join(path, 'statistics3.txt'), 'w', encoding='utf-8') as file:
         for word in Statistic['stat3']:
             file.write(word + "\n")
-    
+
+def load_saves():
+    path = os.path.join(os.path.abspath(__file__), "..", "..", 'saves')
+    file_path = os.path.join(path, 'save.txt')
+    saves = []
+
+    if not os.path.exists(file_path):
+        return saves  
+    with open(file_path, 'r', encoding='utf-8') as file:
+        for line in file:
+            line = line.strip()
+            if line:
+                
+                parts = line.split(';')
+                if len(parts) == 4:
+                    nick, difficulty, score, remaining_time = parts
+                    saves.append({
+                        'nick': nick,
+                        'difficulty': difficulty,
+                        'score': int(score),
+                        'remaining_time': int(remaining_time)
+                    })
+    return saves
+
+def save_saves(score, remaining_time, nick, difficulty):
+
+    path = os.path.join(os.path.abspath(__file__), "..", "..", 'saves')
+    file_path = os.path.join(path, 'save.txt')
+
+    with open(file_path, 'a', encoding='utf-8') as file:
+        file.write(f"{nick};{difficulty};{score};{remaining_time}\n")
+
+def remove_saves(index=0):
+    path = os.path.join(os.path.abspath(__file__), "..", "..", 'saves')
+    file_path = os.path.join(path, 'save.txt')
+    if os.path.exists(file_path):
+        os.remove(file_path)
