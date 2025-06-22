@@ -7,7 +7,7 @@ import tkinter.messagebox as mbox
 import src.LearningMode as LM
 
 class App(ctk.CTk):
-    def __init__(self,*args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.geometry("600x500")
         self.resizable(True, True)
