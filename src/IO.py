@@ -32,38 +32,38 @@ def save_passwords(Passwords):
     with open(os.path.join(path, "easy.txt"), 'w', encoding='utf-8') as file:
         for word in Passwords['Easy']:
             file.write(word + '\n')
-            
+
 def load_stats():
-    Statistics = {'stat1':[],'stat2':[],'stat3':[]} #trzeba zmienić żeby pasowało 
+    Statistics = {'Easy':[],'Medium':[],'Hard':[]} #trzeba zmienić żeby pasowało 
     path = os.path.join(os.path.abspath(__file__), "..", "..", 'stats')
 
-    with open(os.path.join(path, 'statistics.txt'), 'rt', encoding='utf-8') as file:
+    with open(os.path.join(path, 'StatsEasy.txt'), 'rt', encoding='utf-8') as file:
         for line in file:
-            Statistics['stat1'].append(line.strip())
+            Statistics['Easy'].append(line.strip())
 
-    with open(os.path.join(path, 'statistics2.txt'), 'rt', encoding='utf-8') as file:
+    with open(os.path.join(path, 'StatsMedium.txt'), 'rt', encoding='utf-8') as file:
         for line in file:
-            Statistics['stat2'].append(line.strip())
+            Statistics['Medium'].append(line.strip())
 
-    with open(os.path.join(path, 'statistics3.txt'), 'rt', encoding='utf-8') as file:
+    with open(os.path.join(path, 'StatsHard.txt'), 'rt', encoding='utf-8') as file:
         for line in file:
-            Statistics['stat3'].append(line.strip())
+            Statistics['Hard'].append(line.strip())
 
     return Statistics
 
 def save_stats(Statistic):
     path = os.path.join(os.path.abspath(__file__), "..", "..", 'stats')
 
-    with open(os.path.join(path, 'statistics.txt'), 'w', encoding='utf-8') as file:
-        for word in Statistic['stat1']:
+    with open(os.path.join(path, 'StatsEasy.txt'), 'w', encoding='utf-8') as file:
+        for word in Statistic['Easy']:
             file.write(word + "\n")
             
-    with open(os.path.join(path, 'statistics2.txt'), 'w', encoding='utf-8') as file:
-        for word in Statistic['stat2']:
+    with open(os.path.join(path, 'StatsMedium.txt'), 'w', encoding='utf-8') as file:
+        for word in Statistic['Medium']:
             file.write(word + "\n")
 
-    with open(os.path.join(path, 'statistics3.txt'), 'w', encoding='utf-8') as file:
-        for word in Statistic['stat3']:
+    with open(os.path.join(path, 'StatsHard.txt'), 'w', encoding='utf-8') as file:
+        for word in Statistic['Hard']:
             file.write(word + "\n")
 
 def load_saves():

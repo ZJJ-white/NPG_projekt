@@ -29,10 +29,24 @@ class ScrollableFrame(ctk.CTkScrollableFrame):
         self.values = values
         self.widgets = []
 
+        # for index, widget_text in enumerate(values):
+        #     statistics_widget = StatisticsWidget(text=widget_text, Statistics=self.values, master=self)
+        #     statistics_widget.grid(row=index, column=0, padx=(5, 5), pady=(10, 0), sticky='w')
+        #     self.widgets.append(statistics_widget)
+        # zmiany:
+        def extract_score(text):
+            try:
+                return int(text.split("|")[-1].strip())
+            except ValueError:
+                return -1
+
+        self.values.sort(key=extract_score, reverse=True)
+
         for index, widget_text in enumerate(values):
             statistics_widget = StatisticsWidget(text=widget_text, Statistics=self.values, master=self)
             statistics_widget.grid(row=index, column=0, padx=(5, 5), pady=(10, 0), sticky='w')
             self.widgets.append(statistics_widget)
+
 
         self.delete_button = ctk.CTkButton(self, text="Resetuj Statystyki", command=self.delete_statistics_all,
                                            fg_color='white', text_color='black', hover_color='red')
@@ -55,13 +69,13 @@ class StatisticsManagerClass(ctk.CTkToplevel):
             self.grid_rowconfigure(0, weight=1)
 
             #wyświetlanie statystyki
-            self.Stat1Frame = ScrollableFrame(title='Statystyka 1', values=Statistics_data['stat1'],master=self, fg_color='red')
+            self.Stat1Frame = ScrollableFrame(title='Łatwe', values=Statistics_data['Easy'],master=self, fg_color='red')
             self.Stat1Frame.grid(row=0, column=0, padx=10, pady=10, sticky='nsew')
             
-            self.Stat2Frame = ScrollableFrame(title='Statystyka 2', values=Statistics_data['stat2'],master=self, fg_color='blue')
+            self.Stat2Frame = ScrollableFrame(title='Średnie', values=Statistics_data['Medium'],master=self, fg_color='blue')
             self.Stat2Frame.grid(row=0, column=1, padx=10, pady=10, sticky='nsew')
 
-            self.Stat3Frame = ScrollableFrame(title='Statystyka 3', values=Statistics_data['stat3'],master=self, fg_color='green')
+            self.Stat3Frame = ScrollableFrame(title='Trudne', values=Statistics_data['Hard'],master=self, fg_color='green')
             self.Stat3Frame.grid(row=0, column=2, padx=10, pady=10, sticky='nsew')
             
             
@@ -81,11 +95,7 @@ class StatisticsManagerClass(ctk.CTkToplevel):
             self.DeleteAllButton.grid(row=0, column=1, padx=20, pady=10, sticky='w') 
 
         def save_all_statistics(self):
-            IO.save_stats({
-                'stat1': self.Statistics_data['stat1'],
-                'stat2': self.Statistics_data['stat2'],
-                'stat3': self.Statistics_data['stat3']
-            })
+            IO.save_stats(self.Statistics_data)
 
         def delete_all_statistics(self):
             self.Stat1Frame.delete_statistics_all()

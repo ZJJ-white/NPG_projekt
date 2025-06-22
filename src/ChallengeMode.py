@@ -5,26 +5,22 @@ import os
 from datetime import datetime
 import src.IO as IO
 
-
-
-
 class ChallengeModeWindow(ctk.CTkToplevel):
-    def __init__(self, passwords, score=0, time_left=30, nick="", difficulty="Easy", master=None):
+    def __init__(self, passwords):
         super().__init__()
-        self.master=master
         self.geometry("600x400")
         self.title("Tryb Challenge")
         self.passwords = passwords
 
         self.current_word = ""
-        self.score = score
-        self.time_left = time_left
+        self.score = 0
+        self.time_left = 5
         self.timer_running = False
         self.paused = False
         self.used_words = []
-        self.username = nick
+        self.username = ""
 
-        self.difficulty = ctk.StringVar(value=difficulty)
+        self.difficulty = ctk.StringVar(value="Easy")
 
         # Nowy frame tła
         self.bg_frame = ctk.CTkFrame(self, corner_radius=0)
@@ -32,14 +28,9 @@ class ChallengeModeWindow(ctk.CTkToplevel):
 
         self.realtime_clock = ctk.CTkLabel(self.bg_frame, text="", font=("Arial", 14))
         self.realtime_clock.place(relx=0.97, rely=0.03, anchor="ne")
-        if not nick:
-            self.username_window()
-        else:
-            self.username = nick
-            self.build_ui()
 
-            
-        self.update_realtime_clock() 
+        self.username_window()
+        self.update_realtime_clock()
 
     def username_window(self):
         self.username_popup = ctk.CTkToplevel(self)
@@ -55,20 +46,12 @@ class ChallengeModeWindow(ctk.CTkToplevel):
         confirm_button = ctk.CTkButton(self.username_popup, text="OK", command=self.set_username)
         confirm_button.pack(pady=10)
 
-        self.username_popup.lift()
-        self.username_popup.focus_force()
-        self.username_popup.grab_set() 
-         #wyświetla nad grą 
-
     def set_username(self):
         name = self.username_entry.get().strip()
         if name:
             self.username = name
             self.username_popup.destroy()
             self.build_ui()
-
-            self.lift()
-            self.focus_force() #wstawka do poprawnego wyświetlania 
 
     def build_ui(self):
         self.main_frame = ctk.CTkFrame(self.bg_frame, corner_radius=10, fg_color="#101010")
@@ -88,20 +71,19 @@ class ChallengeModeWindow(ctk.CTkToplevel):
         self.entry.grid(row=2, column=0, pady=10)
         self.entry.bind("<Return>", lambda event: self.check_word())
 
-        self.time_label = ctk.CTkLabel(self.main_frame, text=f"Czas: {self.time_left}", font=("Arial", 16))
+        self.time_label = ctk.CTkLabel(self.main_frame, text="Czas: 5", font=("Arial", 16))
         self.time_label.grid(row=3, column=0, pady=10)
 
-        self.score_label = ctk.CTkLabel(self.main_frame, text=f"Wynik: {self.score}", font=("Arial", 16))
+        self.score_label = ctk.CTkLabel(self.main_frame, text="Wynik: 0", font=("Arial", 16))
         self.score_label.grid(row=4, column=0, pady=10)
 
-
-        self.start_button = ctk.CTkButton(self.main_frame, text="Start", command=lambda: self.start_game(self.time_left, self.score))
+        self.start_button = ctk.CTkButton(self.main_frame, text="Start", command=self.start_game)
         self.start_button.grid(row=5, column=0, pady=5)
 
         self.pause_button = ctk.CTkButton(self.main_frame, text="Pauza", command=self.toggle_pause)
         self.pause_button.grid(row=6, column=0, pady=(0, 5))
 
-        self.exit_button = ctk.CTkButton(self.main_frame, text="Wyjdź do menu", fg_color="gray", command=self.Clean)
+        self.exit_button = ctk.CTkButton(self.main_frame, text="Wyjdź do menu", fg_color="gray", command=self.destroy)
         self.exit_button.grid(row=7, column=0, pady=(0, 10))
 
         self.apply_difficulty_colors()
@@ -119,37 +101,19 @@ class ChallengeModeWindow(ctk.CTkToplevel):
         self.main_frame.configure(fg_color="#101010")
         self.word_label.configure(text_color="white")
 
-    def start_game(self, time=30, score=0):
-        self.score = score
-        self.time_left = time
+    def start_game(self):
+        self.score = 0
+        self.time_left = 5
         self.timer_running = True
         self.paused = False
         self.used_words = []
         self.entry.configure(state="normal")
         self.entry.delete(0, 'end')
         self.entry.focus()
-        self.score_label.configure(text=f"Wynik: {self.score}")
-        self.time_label.configure(text=f"Czas: {self.time_left}")
+        self.score_label.configure(text="Wynik: 0")
         self.next_word()
         self.update_timer()
         self.apply_difficulty_colors()
-        self.protocol("WM_DELETE_WINDOW", self.Clean)
-
-    def Clean(self):  #zapis urwaniej gry
-
-        if self.timer_running and self.time_left > 0:
-            IO.save_saves(
-            score=self.score,
-            remaining_time=self.time_left,
-            nick=self.username,
-            difficulty=self.difficulty.get()
-            )
-        if self.master:
-            self.master.deiconify()
-        self.destroy()
-
-
-
 
     def toggle_pause(self):
         self.paused = not self.paused
@@ -200,6 +164,18 @@ class ChallengeModeWindow(ctk.CTkToplevel):
         self.entry.delete(0, 'end')
         self.next_word()
 
+    def save_result(self):
+        match self.difficulty.get():
+            case "Easy":
+                file_name = "StatsEasy.txt"
+            case "Medium":
+                file_name = "StatsMedium.txt"
+            case "Hard":
+                file_name = "StatsHard.txt"
+        result_path = os.path.join(os.path.dirname(__file__), "..", "stats", file_name)
+        with open(result_path, 'a', encoding='utf-8') as f:
+            f.write(f"{datetime.today().strftime("%D %H:%M:%S")} {self.username} | {self.score}\n")
+
     def end_game(self):
         self.timer_running = False
         self.word_label.configure(text="Koniec!")
@@ -207,10 +183,11 @@ class ChallengeModeWindow(ctk.CTkToplevel):
         self.time_label.configure(text="Czas: 0", text_color="red")
         self.save_result()
 
-    def save_result(self):
-        result_path = os.path.join(os.path.dirname(__file__), "..", "results.txt")
-        with open(result_path, 'a', encoding='utf-8') as f:
-            f.write(f"{datetime.now()} | {self.username} | {self.difficulty.get()} | {self.score}\n")
+    # def save_result(self):
+    #     result_path = os.path.join(os.path.dirname(__file__), "..", "results.txt")
+    #     with open(result_path, 'a', encoding='utf-8') as f:
+    #         f.write(f"{datetime.now()} | {self.username} | {self.difficulty.get()} | {self.score}\n")
+    
 
     def update_realtime_clock(self):
         now = datetime.now().strftime("%H:%M:%S")
