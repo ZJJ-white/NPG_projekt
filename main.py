@@ -4,6 +4,7 @@ import src.IO as IO
 import src.StatsManager as SM
 import src.ChallengeMode as CM
 import tkinter.messagebox as mbox
+import src.LearningMode as LM
 
 class App(ctk.CTk):
     def __init__(self,*args, **kwargs):
@@ -69,6 +70,27 @@ class App(ctk.CTk):
     def CleanupStat(self):
         # IO.save_stats(self.Statistics)   # Zapisanie statów?
         self.destroy()  
+        # Tryb Nauki
+        self.LearningModeWindow = None
+        self.LearningModeButton = ctk.CTkButton(self, text='Tryb Nauki', command=self.OpenLearningMode)
+        self.LearningModeButton.pack(side='top', padx=40, pady=20)
+
+        # Tryb Wyzwań
+        self.ChallengeModeWindow = None
+        self.ChallengeModeButton = ctk.CTkButton(self, text='Tryb Wyzwań', command=self.OpenChallengeMode)
+        self.ChallengeModeButton.pack(side='top', padx=40, pady=20)
+
+    def OpenLearningMode(self):
+        if self.LearningModeWindow is None or not self.LearningModeWindow.winfo_exists():
+            self.LearningModeWindow = LM.LearningModeClass(self.Passwords)
+        else:
+            self.LearningModeWindow.focus()
+
+    def OpenChallengeMode(self):
+        if self.ChallengeModeWindow is None or not self.ChallengeModeWindow.winfo_exists():
+            self.ChallengeModeWindow = CM.ChallengeModeClass(self.Passwords)
+        else:
+            self.ChallengeModeWindow.focus()
 
 if __name__ == '__main__':
     app = App()
