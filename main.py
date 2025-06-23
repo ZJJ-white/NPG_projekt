@@ -13,7 +13,20 @@ class App(ctk.CTk):
         self.resizable(True, True)
 
         self.protocol("WM_DELETE_WINDOW", self.Cleanup)       
-        ctk.set_appearance_mode('dark')                         
+        ctk.set_appearance_mode('dark')   
+
+        self.ChallengeModeWindow = None
+        self.ChallengeModeButton = ctk.CTkButton(self, text='Tryb Wyzwań', command=self.OpenChallengeMode)
+        self.ChallengeModeButton.pack(side='top', padx=20, pady=20)
+
+        self.LearningModeWindow = None
+        self.LearningModeButton = ctk.CTkButton(self, text='Tryb Nauki', command=self.OpenLearningMode)
+        self.LearningModeButton.pack(side='top', padx=20, pady=20)
+
+        self.Saves = IO.load_saves()
+        self.SavesWindow = None
+        self.SavesWindowButton = ctk.CTkButton(self, text='Wczytaj ostatnią grę', command=self.OpenSavesWindow)
+        self.SavesWindowButton.pack(side='top', padx=20, pady=20)
         
         self.Passwords = IO.load_passwords()                              
         self.PasswordManagerWindow = None
@@ -25,18 +38,11 @@ class App(ctk.CTk):
         self.StatisticsManagerButton = ctk.CTkButton(self, text='Statystyki', command=self.OpenStatisticsManager)
         self.StatisticsManagerButton.pack(side='top', padx=20, pady=20)
     
-        self.Saves = IO.load_saves()
-        self.SavesWindow = None
-        self.SavesWindowButton = ctk.CTkButton(self, text='Wczytaj ostatnią grę', command=self.OpenSavesWindow)
-        self.SavesWindowButton.pack(side='top', padx=20, pady=20)
         
-        self.LearningModeWindow = None
-        self.LearningModeButton = ctk.CTkButton(self, text='Tryb Nauki', command=self.OpenLearningMode)
-        self.LearningModeButton.pack(side='top', padx=20, pady=20)
+        
+        
 
-        self.ChallengeModeWindow = None
-        self.ChallengeModeButton = ctk.CTkButton(self, text='Tryb Wyzwań', command=self.OpenChallengeMode)
-        self.ChallengeModeButton.pack(side='top', padx=20, pady=20)
+        
 
     def OpenPasswordManager(self):                                                                                               
         if self.PasswordManagerWindow is None or not self.PasswordManagerWindow.winfo_exists():                                  
